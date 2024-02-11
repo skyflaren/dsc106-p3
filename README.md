@@ -1,5 +1,21 @@
 # create-svelte
 
+## Generate static site using svelte SSG
+
+To assist you in creating a static webpage for GitHub Pages using Svelte, we have developed a template for you: [ShaokangJiang/svelte-template (github.com)](https://github.com/ShaokangJiang/svelte-template).
+
+Please follow the link provided, and initiate the creation of a new repository.
+
+![image-20240210175403813](./assets/image-20240210175403813.png)
+
+After GitHub completes the cloning process, navigate to the settings page. On the left panel, under the "Pages" tab, locate the "Source" section and select "GitHub Actions" as the source. 
+
+Clone this repository and proceed with your work. Upon completion, commit and push your changes. The corresponding GitHub Actions will then execute, building a static website hosted at `https://your-username.github.io/your-repo-name` for you.
+
+![image-20240210175104365](./assets/image-20240210175104365.png)
+
+
+
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
 
 ## Creating a project 
