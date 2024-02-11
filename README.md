@@ -14,6 +14,10 @@ Clone this repository and proceed with your work. Upon completion, commit and pu
 
 ![image-20240210175104365](./assets/image-20240210175104365.png)
 
+### Migrate from your project
+
+If you have started on the project and want to switch to using this template, you can copy your `src` folder, go to the local clone of your version of this template, then paste it. When it says the file exists, simply click replace, and you can continue working on your version of this template.
+
 
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
