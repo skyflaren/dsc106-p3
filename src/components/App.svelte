@@ -97,7 +97,7 @@
   <h1>World Governance Indicators Choropleth</h1>
   <label for="governance">Choose a Governance Indicator</label>
   <select id="governance-select" name="governance">
-    <option value="COC">Control of Corruption</option>
+    <option value="COC" selected>Control of Corruption</option>
     <option value="VAA">Voice And Accountability</option>
     <option value="GE">Government Effectiveness</option>
     <option value="PI">Political Instability</option>
