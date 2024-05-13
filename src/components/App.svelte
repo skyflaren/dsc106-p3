@@ -2,6 +2,7 @@
   import * as d3 from "d3";
   import * as topojson from "topojson-client";
 	import {onMount} from 'svelte';
+  import { base } from '$app/paths';
 
   const loadDataAndRenderMap = () => {
     load_data().then(countryData => {
@@ -17,6 +18,8 @@
       loadDataAndRenderMap(); 
     });
   })
+
+  // Loads the base world map from topojson file
 
 	const load_map = () => {
     const svg = d3.select("#my_dataviz")
@@ -38,7 +41,7 @@
     const path = d3.geoPath().projection(projection);
     const g = svg.append("g");
 
-    d3.json("/world-custom.json").then(function(world) {
+    d3.json(`${base}/world-custom.json`).then(function(world) {
       g.selectAll("path")
         .data(topojson.feature(world, world.objects.countries).features)
         .enter().append("path")
@@ -49,12 +52,12 @@
     });
 
 	}
-
+// Loads the data for governance from the csv file
   const load_data = () => {
     return new Promise((resolve, reject) => {
       const countryData = {};
 
-      d3.csv("/world_gov_indicators.csv", function(data) {
+      d3.csv(`${base}/world_gov_indicators.csv`, function(data) {
         const selectedVal = document.getElementById("governance-select").value;
         countryData[`${data['Country']}, ${data['Year']}`] = parseFloat(data[selectedVal]);
       }).then(() => {
@@ -62,6 +65,8 @@
       });
     });
   }
+
+// Adds the governance data onto map as choropleth
 
   const load_choropleth = (countries) => {
     // Only shows 2002 data til we implement time scale
