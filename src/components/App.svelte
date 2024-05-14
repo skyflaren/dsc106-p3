@@ -42,7 +42,7 @@
 	const load_map = async() => {
     const svg = d3.select("#my_dataviz")
       .attr("width", innerWidth)
-      .attr("height", innerHeight-200)
+      .attr("height", innerHeight-201)
       .call(d3.zoom().on("zoom", (event) => {   
         g.attr("transform", event.transform); 
       }))
@@ -69,7 +69,6 @@
         .style("fill", "#aab5bf");
       load_choropleth(world_data);
     });
-    console.log("first loaded map")
 	}
 // Loads the data for governance from the csv file
   const load_data = () => {
@@ -88,7 +87,6 @@
 
 // Adds the governance data onto map as choropleth
   const load_choropleth = async(countries) => {
-    console.log("started chloro")
     const filtered_year = await load_filtered(countries);
     const colorScale = d3.scaleSequential([-2.5, 2.5], d3.interpolateBlues);
     d3.selectAll("path")
@@ -112,29 +110,29 @@
         filtered_year[`${country.substring(0, country.length-6)}`] = countries[country]
       }
     }
-    console.log(filtered_year);
     return filtered_year;
   }
 
 $: {
-  console.log(sliderTimeScale(slider_time));
-  console.log(world_data);
   if (Object.keys(world_data).length !== 0){
-    console.log(Object.keys(world_data).length);
     load_choropleth(world_data);
   }
 	slider_label = sliderTimeScale(slider_time);
-
-  // d3.select("#my_dataviz")
-  //   .attr("width", innerWidth)
-  //   .attr("height", innerHeight)
-  //   .call(d3.zoom().on("zoom", (event) => {   
-  //     g.attr("transform", event.transform); 
-  //   }));
+  console.log("uopdate")
 }
+
+const resizeWindow = () => {
+  innerWidth = window.innerWidth
+  innerHeight = window.innerHeight
+
+  d3.select("#my_dataviz")
+    .attr("width", innerWidth)
+    .attr("height", innerHeight)
+}
+
 </script>
 
-<svelte:window bind:innerWidth bind:innerHeight/>
+<svelte:window on:resize={resizeWindow} bind:innerWidth bind:innerHeight/>
 
 <main>
   <div class="top-half">
@@ -170,7 +168,7 @@ $: {
     </div>
   </div>
   <div class="choropleth" width="{innerWidth}">
-    <svg id="my_dataviz" width="600" height="600"></svg>
+    <svg id="my_dataviz" width="600" height="200"></svg>
   </div>
 </main>
 
@@ -272,7 +270,11 @@ $: {
 
   .choropleth {
     border-top: 1px solid #bbb;
-    width: 100%;
+    /* width: 100%; */
+  }
+  
+  #my_dataviz{
+    display:block;
   }
 
   @media (min-width: 200px) {
