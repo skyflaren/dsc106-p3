@@ -116,7 +116,8 @@
         return d.properties.name
       })
       .on("mouseover", d => {
-        d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(filtered_year[d.srcElement.getAttribute("class")])
+        const countryName = d.srcElement.getAttribute("class")
+        d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(`${countryName}: ${filtered_year[countryName]}`)
       })
       .on('mouseout', function() {
         d3.select('#tooltip').style('opacity', 0)
@@ -171,6 +172,5 @@ $: {
   .choropleth {
     border: 1px solid black;
   }
-
 
 </style>
