@@ -174,13 +174,13 @@ const resizeWindow = () => {
   </div>
   <span class="data-cred">Data Source: <a href="https://www.worldbank.org/en/publication/worldwide-governance-indicators/interactive-data-access">The World Bank</a></span>
   
-  <div class="theme-switch-wrapper">
+  <!-- <div class="theme-switch-wrapper">
     <em>Dark mode?</em>
     <label class="theme-switch" for="checkbox">
           <input type="checkbox" id="checkbox" />
           <div class="slider round"></div>
     </label>
-  </div>
+  </div> -->
 </main>
 
 <style>
