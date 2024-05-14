@@ -10,6 +10,7 @@
 
   let innerWidth = 0
 	let innerHeight = 0
+  let border_col = "#222";
 
   // Slider for the Years (2002 - 2022)
   const sliderTimeScale = d3
@@ -64,7 +65,7 @@
         .data(topojson.feature(world, world.objects.countries).features)
         .enter().append("path")
         .attr("d", path)
-        .style("stroke", "white") 
+        .style("stroke", border_col) 
         .style("stroke-width", "0.25px") 
         .style("fill", "#aab5bf");
       load_choropleth(world_data);
@@ -130,11 +131,12 @@ const resizeWindow = () => {
     .attr("height", innerHeight)
 }
 
+
 </script>
 
 <svelte:window on:resize={resizeWindow} bind:innerWidth bind:innerHeight/>
 
-<main>
+<main class="dark-mode">
   <div class="top-half">
     <div>
       <h1>World Governance Indicators Choropleth</h1>
@@ -171,6 +173,14 @@ const resizeWindow = () => {
     <svg id="my_dataviz" width="600" height="200"></svg>
   </div>
   <span class="data-cred">Data Source: <a href="https://www.worldbank.org/en/publication/worldwide-governance-indicators/interactive-data-access">The World Bank</a></span>
+  
+  <div class="theme-switch-wrapper">
+    <em>Dark mode?</em>
+    <label class="theme-switch" for="checkbox">
+          <input type="checkbox" id="checkbox" />
+          <div class="slider round"></div>
+    </label>
+  </div>
 </main>
 
 <style>
@@ -178,23 +188,42 @@ const resizeWindow = () => {
   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 
   :global(body) {
-    margin: 0; padding: 0;
-  }
+    margin: 0;
+    padding: 0;
 
-  main {
+    /* light mode */
+    --background-color: #fff;
     --primary: #486b99;
     --title: #161c2e;
     --drop-shadow: rgba(255, 255, 255, 0.2);
     --heading-label: #777;
     --text-label: #cecece;
+    --prompt-border: #bbb;
+    --year-background-color: #ddd;
     --divider: #eee;
+  }
 
+  .dark-mode {
+    --background-color: #222;
+    --primary: #5e85b8;
+    --title: #e1eaf5;
+    --drop-shadow: rgba(0, 0, 0, 0.15);
+    --heading-label: #888;
+    --text-label: #282828;
+    --prompt-border: #0d0d0d;
+    --year-background-color: #1d1d1d;
+    --divider: #1c1c1c;
+  }
+
+  main {
     font-family: "Roboto Mono", monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow: hidden !important;
     overflow-y: hidden !important;
+
+    background-color: var(--background-color);
   }
 
   h1{
@@ -253,10 +282,10 @@ const resizeWindow = () => {
   }
 
   .overlay > * {
-    background-color: #ddd;
+    background-color: var(--year-background-color);
     padding: 0px 10px;
     border-radius: 2.5px;
-    border: 1px #bbb solid;
+    border: 1px var(--prompt-border) solid;
 
     color: var(--primary);
   }
@@ -267,21 +296,21 @@ const resizeWindow = () => {
 
   label{
     font-size: 0.9em;
-    
   }
 
   #year-label{
     padding: 4px 6px;
+    margin-left: 5px;
     border-radius: 2.5px;
-    background-color: var(--text-labels);
+    background-color: var(--text-label);
   }
 
   .choropleth {
-    border-top: 1px solid #bbb;
+    border-top: 1px solid var(--prompt-border);
   }
   
   #my_dataviz{
-    display:block;
+    display: block;
   }
 
   .data-cred{
@@ -292,9 +321,8 @@ const resizeWindow = () => {
     font-size: 12px;
     box-shadow: 0px 0px 15px 10px var(--drop-shadow);
     border-top-left-radius: 5px;
-    background-color: white;
-    /* padding: 8px; */
-    border: 1px #ddd solid;
+    background-color: var(--background-color);
+    border: 1px var(--year-background-color) solid;
     color: var(--title);
   }
 
