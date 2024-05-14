@@ -19,15 +19,15 @@
     console.log("value: " + value);
   }
 
-  const loadDataAndRenderMap = () => {
+  const loadDataAndRenderMap = async() => {
     load_data().then(countryData => {
-      load_choropleth(countryData);
+    load_choropleth(countryData);
     });
 };
   
   onMount(()=>{
     load_map();
-    loadDataAndRenderMap(); 
+    loadDataAndRenderMap();
 
     document.getElementById("governance-select").addEventListener("change", () => {
       loadDataAndRenderMap(); 
@@ -36,7 +36,7 @@
 
   // Loads the base world map from topojson file
 
-	const load_map = () => {
+	const load_map = async() => {
     const svg = d3.select("#my_dataviz")
       .attr("width", 1200)
       .attr("height", 600)
@@ -64,8 +64,9 @@
         .style("stroke", "white") 
         .style("stroke-width", "0.25px") 
         .style("fill", "#aab5bf");
+      load_choropleth(world_data);
     });
-
+    console.log("first loaded map")
 	}
 // Loads the data for governance from the csv file
   const load_data = () => {
@@ -83,15 +84,9 @@
   }
 
 // Adds the governance data onto map as choropleth
-  
-  const load_choropleth = (countries) => {
-    // Only shows 2002 data til we implement time scale
-    const filtered_year = {}
-    for (const country in countries){
-      if (country.includes("" + sliderTimeScale(slider_time))){
-        filtered_year[`${country.substring(0, country.length-6)}`] = countries[country]
-      }
-    }
+  const load_choropleth = async(countries) => {
+    console.log("started chloro")
+    const filtered_year = await load_filtered(countries);
     const colorScale = d3.scaleSequential([-2.5, 2.5], d3.interpolateBlues);
     d3.selectAll("path")
       .style("fill", d => {
@@ -105,6 +100,17 @@
     .attr("class", d => {
       return d.properties.name
     })
+  }
+
+  const load_filtered = async(countries) => {
+    const filtered_year = {}
+    for (const country in countries){
+      if (country.includes("" + sliderTimeScale(slider_time))){
+        filtered_year[`${country.substring(0, country.length-6)}`] = countries[country]
+      }
+    }
+    console.log(filtered_year);
+    return filtered_year;
   }
 
 $: {
