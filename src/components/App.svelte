@@ -104,14 +104,6 @@
       .append('div')
       .attr('id', 'tooltip')
       .attr('style', 'position: absolute; opacity: 0; background-color: white; color: black; padding: 2px; border: 1px solid black;')
-
-    // // Only shows 2002 data til we implement time scale
-    // const filtered_year = {}
-    // for (const country in countries){
-    //   if (country.includes("" + sliderTimeScale(slider_time))){
-    //     filtered_year[`${country.substring(0, country.length-6)}`] = countries[country]
-    //   }
-    // }
     
     d3.selectAll("path")
       .style("fill", d => {
