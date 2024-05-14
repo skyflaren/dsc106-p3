@@ -10,8 +10,12 @@
 
   let innerWidth = 0
 	let innerHeight = 0
-  let border_col = "#222";
 
+  // For dark mode, use
+  // let border_col = "#222";
+  let border_col = "white";
+
+  
   // Slider for the Years (2002 - 2022)
   const sliderTimeScale = d3
     .scaleLinear()
@@ -136,10 +140,10 @@ const resizeWindow = () => {
 
 <svelte:window on:resize={resizeWindow} bind:innerWidth bind:innerHeight/>
 
-<main class="dark-mode">
+<main class="">
   <div class="top-half">
     <div>
-      <h1>World Governance Indicators Choropleth</h1>
+      <h1>Governance Quality Across the World</h1>
       <hr class="top-hr">
     </div>
     <div class="row-wrap">
