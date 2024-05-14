@@ -13,10 +13,10 @@
     .scaleLinear()
     .domain([0, 20])
     .rangeRound([2002, 2022]);
+  
 
   function filterYears(slider_time) {
     let value = sliderTimeScale(slider_time); //converts slider to Year
-    console.log("value: " + value);
   }
 
   const loadDataAndRenderMap = () => {
@@ -37,6 +37,7 @@
   // Loads the base world map from topojson file
 
 	const load_map = () => {
+
     const svg = d3.select("#my_dataviz")
       .attr("width", 1200)
       .attr("height", 600)
@@ -49,11 +50,12 @@
     
 
     const projection = d3.geoMercator()
-      .scale(130)
+      .scale(175)
       .center([0,20])
       .translate([width / 2, height / 2]);
 
     const path = d3.geoPath().projection(projection);
+  
     const g = svg.append("g");
 
     d3.json(`${base}/world-custom.json`).then(function(world) {
@@ -63,7 +65,7 @@
         .attr("d", path)
         .style("stroke", "white") 
         .style("stroke-width", "0.25px") 
-        .style("fill", "#aab5bf");
+        .style("fill", "#aab5bf")
     });
 
 	}
@@ -82,9 +84,16 @@
     });
   }
 
+
 // Adds the governance data onto map as choropleth
   
   const load_choropleth = (countries) => {
+    // Tooltip
+    d3.select('body')
+      .append('div')
+      .attr('id', 'tooltip')
+      .attr('style', 'position: absolute; opacity: 0; background-color: white; color: black; padding: 2px; border: 1px solid black;')
+
     // Only shows 2002 data til we implement time scale
     const filtered_year = {}
     for (const country in countries){
@@ -93,6 +102,7 @@
       }
     }
     const colorScale = d3.scaleSequential([-2.5, 2.5], d3.interpolateBlues);
+    
     d3.selectAll("path")
       .style("fill", d => {
       const countryData = filtered_year[d.properties.name];
@@ -102,16 +112,24 @@
         return "#aab5bf";
       }
     })
-    .attr("class", d => {
-      return d.properties.name
-    })
+      .attr("class", d => {
+        return d.properties.name
+      })
+      .on("mouseover", d => {
+        d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(filtered_year[d.srcElement.getAttribute("class")])
+      })
+      .on('mouseout', function() {
+        d3.select('#tooltip').style('opacity', 0)
+      })
+      .on('mousemove', function(event) {
+        d3.select('#tooltip')
+          .style('left', (event.pageX + 10) + 'px')
+          .style('top', (event.pageY + 10) + 'px')
+      })
   }
 
 $: {
-  console.log(sliderTimeScale(slider_time));
-  console.log(world_data);
   if (Object.keys(world_data).length !== 0){
-    console.log(Object.keys(world_data).length);
     load_choropleth(world_data);
   }
 	slider_label = sliderTimeScale(slider_time);
@@ -138,8 +156,8 @@ $: {
 			max="20"
 			bind:value={slider_time}
 		/>
-	</div>
-  <div class="choropleth">
+  </div>
+	<div class="choropleth">
     <svg id="my_dataviz" width="600" height="600"></svg>
   </div>
 </main>
@@ -153,4 +171,6 @@ $: {
   .choropleth {
     border: 1px solid black;
   }
+
+
 </style>
