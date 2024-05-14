@@ -4,6 +4,21 @@
 	import {onMount} from 'svelte';
   import { base } from '$app/paths';
 
+  let slider_label = "Year";
+  let slider_time = 0;
+  let world_data = {};
+
+  // Slider for the Years (2002 - 2022)
+  const sliderTimeScale = d3
+    .scaleLinear()
+    .domain([0, 20])
+    .rangeRound([2002, 2022]);
+
+  function filterYears(slider_time) {
+    let value = sliderTimeScale(slider_time); //converts slider to Year
+    console.log("value: " + value);
+  }
+
   const loadDataAndRenderMap = () => {
     load_data().then(countryData => {
       load_choropleth(countryData);
@@ -61,25 +76,26 @@
         const selectedVal = document.getElementById("governance-select").value;
         countryData[`${data['Country']}, ${data['Year']}`] = parseFloat(data[selectedVal]);
       }).then(() => {
+        world_data = countryData;
         resolve(countryData);
       });
     });
   }
 
 // Adds the governance data onto map as choropleth
-
+  
   const load_choropleth = (countries) => {
     // Only shows 2002 data til we implement time scale
-    const only_2002 = {}
+    const filtered_year = {}
     for (const country in countries){
-      if (country.includes("2002")){
-        only_2002[`${country.substring(0, country.length-6)}`] = countries[country]
+      if (country.includes("" + sliderTimeScale(slider_time))){
+        filtered_year[`${country.substring(0, country.length-6)}`] = countries[country]
       }
     }
     const colorScale = d3.scaleSequential([-2.5, 2.5], d3.interpolateBlues);
     d3.selectAll("path")
       .style("fill", d => {
-      const countryData = only_2002[d.properties.name];
+      const countryData = filtered_year[d.properties.name];
       if (!isNaN(countryData)) {
         return colorScale(countryData);
       } else {
@@ -91,19 +107,38 @@
     })
   }
 
+$: {
+  console.log(sliderTimeScale(slider_time));
+  console.log(world_data);
+  if (Object.keys(world_data).length !== 0){
+    console.log(Object.keys(world_data).length);
+    load_choropleth(world_data);
+  }
+	slider_label = sliderTimeScale(slider_time);
+}
 </script>
 
 <main>
   <h1>World Governance Indicators Choropleth</h1>
   <label for="governance">Choose a Governance Indicator</label>
   <select id="governance-select" name="governance">
-    <option value="COC" selected>Control of Corruption</option>
+    <option value="COC" selected="selected">Control of Corruption</option>
     <option value="VAA">Voice And Accountability</option>
     <option value="GE">Government Effectiveness</option>
     <option value="PI">Political Instability</option>
     <option value="RQ">Regulatory Quality</option>
     <option value="ROL">Rule of Law</option>
   </select>
+  <div class="overlay">	
+		<label>{slider_label}</label>
+		<input
+			id="slider"
+			type="range"
+			min="0"
+			max="20"
+			bind:value={slider_time}
+		/>
+	</div>
   <div class="choropleth">
     <svg id="my_dataviz" width="600" height="600"></svg>
   </div>
