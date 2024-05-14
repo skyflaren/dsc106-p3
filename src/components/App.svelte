@@ -170,6 +170,7 @@ const resizeWindow = () => {
   <div class="choropleth" width="{innerWidth}">
     <svg id="my_dataviz" width="600" height="200"></svg>
   </div>
+  <span class="data-cred">Data Source: <a href="https://www.worldbank.org/en/publication/worldwide-governance-indicators/interactive-data-access">The World Bank</a></span>
 </main>
 
 <style>
@@ -181,6 +182,13 @@ const resizeWindow = () => {
   }
 
   main {
+    --primary: #486b99;
+    --title: #161c2e;
+    --drop-shadow: rgba(255, 255, 255, 0.2);
+    --heading-label: #777;
+    --text-label: #cecece;
+    --divider: #eee;
+
     font-family: "Roboto Mono", monospace;
     display: flex;
     flex-direction: column;
@@ -191,7 +199,7 @@ const resizeWindow = () => {
 
   h1{
     font-size: 2em;
-    color: #161c2e;
+    color: var(--title);
     margin: 30px 15px 0px;
   }
 
@@ -200,7 +208,7 @@ const resizeWindow = () => {
   }
 
   .top-hr{
-    border: 0.75px #eee solid;
+    border: 0.75px var(--divider) solid;
   }
 
   #governance-select{
@@ -214,7 +222,7 @@ const resizeWindow = () => {
     justify-content: end;
     text-align: right;
 
-    color: #777;
+    color: var(--heading-label);
   }
 
   .row-wrap {
@@ -250,7 +258,7 @@ const resizeWindow = () => {
     border-radius: 2.5px;
     border: 1px #bbb solid;
 
-    color: #486b99;
+    color: var(--primary);
   }
 
   .vert-center{
@@ -265,16 +273,33 @@ const resizeWindow = () => {
   #year-label{
     padding: 4px 6px;
     border-radius: 2.5px;
-    background-color: #cecece;
+    background-color: var(--text-labels);
   }
 
   .choropleth {
     border-top: 1px solid #bbb;
-    /* width: 100%; */
   }
   
   #my_dataviz{
     display:block;
+  }
+
+  .data-cred{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 5px 10px 5px 5px;
+    font-size: 12px;
+    box-shadow: 0px 0px 15px 10px var(--drop-shadow);
+    border-top-left-radius: 5px;
+    background-color: white;
+    /* padding: 8px; */
+    border: 1px #ddd solid;
+    color: var(--title);
+  }
+
+  a {
+    color: var(--primary);
   }
 
   @media (min-width: 200px) {
