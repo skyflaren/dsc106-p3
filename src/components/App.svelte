@@ -334,6 +334,11 @@ const resizeWindow = () => {
   d3.select("#my_dataviz")
     .attr("width", innerWidth)
     .attr("height", innerHeight-201)
+  
+    d3.select('#tooltip')
+      .style('left', Math.min(innerWidth-100) + 'px')
+      .style('top', Math.min(innerHeight-100) + 'px')
+
 }
 
 
