@@ -11,7 +11,7 @@
     "COC": "Control of Corruption",
     "VAA" : "Voice and Accountability",
     "GE": "Government of Effectiveness",
-    "PI": "Political Instability",
+    "PI": "Political Stability",
     "RQ": "Regulatory Quality",
     "ROL": "Rule of Law"
   }
@@ -290,7 +290,7 @@ function ramp(color, n = 256) {
       })
       .on("mouseover", d => {
         const countryName = d.srcElement.getAttribute("class")
-        d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(`${countryName}: ${filtered_year[countryName]}`)
+        d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(`${countryName}: ${filtered_year[countryName] || 'undefined'}`)
       })
       .on('mouseout', function() {
         d3.select('#tooltip').style('opacity', 0)
@@ -359,7 +359,7 @@ const resizeWindow = () => {
           <option value="COC" selected="selected">Control of Corruption</option>
           <option value="VAA">Voice And Accountability</option>
           <option value="GE">Government Effectiveness</option>
-          <option value="PI">Political Instability</option>
+          <option value="PI">Political Stability</option>
           <option value="RQ">Regulatory Quality</option>
           <option value="ROL">Rule of Law</option>
         </select>
