@@ -289,7 +289,7 @@ function ramp(color, n = 256) {
       })
       .on("mouseover", d => {
         const countryName = d.srcElement.getAttribute("class")
-        d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(`${countryName}: ${filtered_year[countryName]}`)
+        d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(`${countryName}: ${filtered_year[countryName] || 'undefined'}`)
       })
       .on('mouseout', function() {
         d3.select('#tooltip').style('opacity', 0)
