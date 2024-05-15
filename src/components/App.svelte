@@ -42,7 +42,8 @@
 
     legend({
       color: d3.scaleSequential([-2.5, 2.5], d3.interpolateBlues),
-      title: governance_key[document.getElementById("governance-select").value]
+      title: governance_key[document.getElementById("governance-select").value],
+      tickFormat: ".1f"
     })
 
   // Code adapted from observablehq.com, since d3-legend-swatch has outdated documentation
