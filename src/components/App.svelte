@@ -296,8 +296,8 @@
       })
       .on('mousemove', function(event) {
         d3.select('#tooltip')
-          .style('left', (event.pageX + 10) + 'px')
-          .style('top', (event.pageY + 10) + 'px')
+          .style('left', Math.min(event.pageX + 10, innerWidth-100) + 'px')
+          .style('top', Math.min(event.pageY + 10, innerHeight-100) + 'px')
       })
   }
 
