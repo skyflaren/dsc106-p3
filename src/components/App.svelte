@@ -46,155 +46,154 @@
       tickFormat: ".1f"
     })
 
-  // Code adapted from observablehq.com, since d3-legend-swatch has outdated documentation
+    // Code adapted from observablehq.com, since d3-legend-swatch has outdated documentation
     function legend({
-  color,
-  title,
-  tickSize = 6,
-  width = 320,
-  height = 44 + tickSize,
-  marginTop = 18,
-  marginRight = 0,
-  marginBottom = 16 + tickSize,
-  marginLeft = 0,
-  ticks = width / 64,
-  tickFormat,
-  tickValues
-} = {}) {
-  const svg = d3.select("#legend")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("viewBox", [0, 0, width, height])
-    .style("overflow", "visible")
-    .style("display", "block");
+      color,
+      title,
+      tickSize = 6,
+      width = 260,
+      height = 44 + tickSize,
+      marginTop = 18,
+      marginRight = 0,
+      marginBottom = 16 + tickSize,
+      marginLeft = 0,
+      ticks = width / 64,
+      tickFormat,
+      tickValues
+    } = {}) {
+    const svg = d3.select("#legend")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width, height])
+      .style("display", "block")
 
-  let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
-  let x;
+    let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
+    let x;
 
-  // Continuous
-  if (color.interpolate) {
-    const n = Math.min(color.domain().length, color.range().length);
+    // Continuous
+    if (color.interpolate) {
+      const n = Math.min(color.domain().length, color.range().length);
 
-    x = color.copy().rangeRound(d3.quantize(d3.interpolate(marginLeft, width - marginRight), n));
+      x = color.copy().rangeRound(d3.quantize(d3.interpolate(marginLeft, width - marginRight), n));
 
-    svg.append("image")
-      .attr("x", marginLeft)
-      .attr("y", marginTop)
-      .attr("width", width - marginLeft - marginRight)
-      .attr("height", height - marginTop - marginBottom)
-      .attr("preserveAspectRatio", "none")
-      .attr("xlink:href", ramp(color.copy().domain(d3.quantize(d3.interpolate(0, 1), n))).toDataURL());
-  }
+      svg.append("image")
+        .attr("x", marginLeft)
+        .attr("y", marginTop)
+        .attr("width", width - marginLeft - marginRight)
+        .attr("height", height - marginTop - marginBottom)
+        .attr("preserveAspectRatio", "none")
+        .attr("xlink:href", ramp(color.copy().domain(d3.quantize(d3.interpolate(0, 1), n))).toDataURL());
+    }
 
-  // Sequential
-  else if (color.interpolator) {
-    x = Object.assign(color.copy()
-      .interpolator(d3.interpolateRound(marginLeft, width - marginRight)), {
-        range() {
-          return [marginLeft, width - marginRight];
+    // Sequential
+    else if (color.interpolator) {
+      x = Object.assign(color.copy()
+        .interpolator(d3.interpolateRound(marginLeft, width - marginRight)), {
+          range() {
+            return [marginLeft, width - marginRight];
+          }
+        });
+
+      svg.append("image")
+        .attr("x", marginLeft)
+        .attr("y", marginTop)
+        .attr("width", width - marginLeft - marginRight)
+        .attr("height", height - marginTop - marginBottom)
+        .attr("preserveAspectRatio", "none")
+        .attr("xlink:href", ramp(color.interpolator()).toDataURL());
+
+      // scaleSequentialQuantile doesn’t implement ticks or tickFormat.
+      if (!x.ticks) {
+        if (tickValues === undefined) {
+          const n = Math.round(ticks + 1);
+          tickValues = d3.range(n).map(i => d3.quantile(color.domain(), i / (n - 1)));
         }
-      });
-
-    svg.append("image")
-      .attr("x", marginLeft)
-      .attr("y", marginTop)
-      .attr("width", width - marginLeft - marginRight)
-      .attr("height", height - marginTop - marginBottom)
-      .attr("preserveAspectRatio", "none")
-      .attr("xlink:href", ramp(color.interpolator()).toDataURL());
-
-    // scaleSequentialQuantile doesn’t implement ticks or tickFormat.
-    if (!x.ticks) {
-      if (tickValues === undefined) {
-        const n = Math.round(ticks + 1);
-        tickValues = d3.range(n).map(i => d3.quantile(color.domain(), i / (n - 1)));
-      }
-      if (typeof tickFormat !== "function") {
-        tickFormat = d3.format(tickFormat === undefined ? ",f" : tickFormat);
+        if (typeof tickFormat !== "function") {
+          tickFormat = d3.format(tickFormat === undefined ? ",f" : tickFormat);
+        }
       }
     }
-  }
 
-  // Threshold
-  else if (color.invertExtent) {
-    const thresholds = color.thresholds ? color.thresholds() // scaleQuantize
-      :
-      color.quantiles ? color.quantiles() // scaleQuantile
-      :
-      color.domain(); // scaleThreshold
+    // Threshold
+    else if (color.invertExtent) {
+      const thresholds = color.thresholds ? color.thresholds() // scaleQuantize
+        :
+        color.quantiles ? color.quantiles() // scaleQuantile
+        :
+        color.domain(); // scaleThreshold
 
-    const thresholdFormat = tickFormat === undefined ? d => d :
-      typeof tickFormat === "string" ? d3.format(tickFormat) :
-      tickFormat;
+      const thresholdFormat = tickFormat === undefined ? d => d :
+        typeof tickFormat === "string" ? d3.format(tickFormat) :
+        tickFormat;
 
-    x = d3.scaleLinear()
-      .domain([-1, color.range().length - 1])
-      .rangeRound([marginLeft, width - marginRight]);
+      x = d3.scaleLinear()
+        .domain([-1, color.range().length - 1])
+        .rangeRound([marginLeft, width - marginRight]);
+
+      svg.append("g")
+        .selectAll("rect")
+        .data(color.range())
+        .join("rect")
+        .attr("x", (d, i) => x(i - 1))
+        .attr("y", marginTop)
+        .attr("width", (d, i) => x(i) - x(i - 1))
+        .attr("height", height - marginTop - marginBottom)
+        .attr("fill", d => d);
+
+      tickValues = d3.range(thresholds.length);
+      tickFormat = i => thresholdFormat(thresholds[i], i);
+    }
+
+    // Ordinal
+    else {
+      x = d3.scaleBand()
+        .domain(color.domain())
+        .rangeRound([marginLeft, width - marginRight]);
+
+      svg.append("g")
+        .selectAll("rect")
+        .data(color.domain())
+        .join("rect")
+        .attr("x", x)
+        .attr("y", marginTop)
+        .attr("width", Math.max(0, x.bandwidth() - 1))
+        .attr("height", height - marginTop - marginBottom)
+        .attr("fill", color);
+
+      tickAdjust = () => {};
+    }
 
     svg.append("g")
-      .selectAll("rect")
-      .data(color.range())
-      .join("rect")
-      .attr("x", (d, i) => x(i - 1))
-      .attr("y", marginTop)
-      .attr("width", (d, i) => x(i) - x(i - 1))
-      .attr("height", height - marginTop - marginBottom)
-      .attr("fill", d => d);
+      .attr("transform", `translate(0,${height - marginBottom})`)
+      .call(d3.axisBottom(x)
+        .ticks(ticks, typeof tickFormat === "string" ? tickFormat : undefined)
+        .tickFormat(typeof tickFormat === "function" ? tickFormat : undefined)
+        .tickSize(tickSize)
+        .tickValues(tickValues))
+      .call(tickAdjust)
+      .call(g => g.select(".domain").remove())
+      .call(g => g.append("text")
+        .attr("x", marginLeft)
+        .attr("y", marginTop + marginBottom - height - 6)
+        .attr("fill", "currentColor")
+        .attr("text-anchor", "start")
+        .attr("font-weight", "bold")
+        .text(title));
 
-    tickValues = d3.range(thresholds.length);
-    tickFormat = i => thresholdFormat(thresholds[i], i);
+    return svg.node();
   }
 
-  // Ordinal
-  else {
-    x = d3.scaleBand()
-      .domain(color.domain())
-      .rangeRound([marginLeft, width - marginRight]);
-
-    svg.append("g")
-      .selectAll("rect")
-      .data(color.domain())
-      .join("rect")
-      .attr("x", x)
-      .attr("y", marginTop)
-      .attr("width", Math.max(0, x.bandwidth() - 1))
-      .attr("height", height - marginTop - marginBottom)
-      .attr("fill", color);
-
-    tickAdjust = () => {};
+  function ramp(color, n = 256) {
+    var canvas = document.createElement('canvas');
+    canvas.width = n;
+    canvas.height = 1;
+    const context = canvas.getContext("2d");
+    for (let i = 0; i < n; ++i) {
+      context.fillStyle = color(i / (n - 1));
+      context.fillRect(i, 0, 1, 1);
+    }
+    return canvas;
   }
-
-  svg.append("g")
-    .attr("transform", `translate(0,${height - marginBottom})`)
-    .call(d3.axisBottom(x)
-      .ticks(ticks, typeof tickFormat === "string" ? tickFormat : undefined)
-      .tickFormat(typeof tickFormat === "function" ? tickFormat : undefined)
-      .tickSize(tickSize)
-      .tickValues(tickValues))
-    .call(tickAdjust)
-    .call(g => g.select(".domain").remove())
-    .call(g => g.append("text")
-      .attr("x", marginLeft)
-      .attr("y", marginTop + marginBottom - height - 6)
-      .attr("fill", "currentColor")
-      .attr("text-anchor", "start")
-      .attr("font-weight", "bold")
-      .text(title));
-
-  return svg.node();
-}
-
-function ramp(color, n = 256) {
-  var canvas = document.createElement('canvas');
-  canvas.width = n;
-  canvas.height = 1;
-  const context = canvas.getContext("2d");
-  for (let i = 0; i < n; ++i) {
-    context.fillStyle = color(i / (n - 1));
-    context.fillRect(i, 0, 1, 1);
-  }
-  return canvas;
-}
 }
 
   
@@ -218,7 +217,7 @@ function ramp(color, n = 256) {
 	const load_map = async() => {
     const svg = d3.select("#my_dataviz")
       .attr("width", innerWidth)
-      .attr("height", innerHeight-201)
+      .attr("height", innerHeight-221)
       .call(d3.zoom().on("zoom", (event) => {   
         g.attr("transform", event.transform); 
       }))
@@ -271,10 +270,10 @@ function ramp(color, n = 256) {
     const colorScale = d3.scaleSequential([-2.5, 2.5], d3.interpolateBlues);
 
     // Tooltip
-    d3.select('body')
+    d3.select('main')
       .append('div')
       .attr('id', 'tooltip')
-      .attr('style', 'position: absolute; opacity: 0; background-color: white; color: black; padding: 2px; border: 1px solid black;')
+      .attr('style', 'position: absolute; opacity: 0; background-color: white; color: black; padding: 2px 5px; border: 1px solid #999; border-radius: 2.5px; overflow: hidden; font-size: 12px;')
     
     d3.selectAll("path")
       .style("fill", d => {
@@ -290,7 +289,7 @@ function ramp(color, n = 256) {
       })
       .on("mouseover", d => {
         const countryName = d.srcElement.getAttribute("class")
-        d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(`${countryName}: ${filtered_year[countryName] || 'undefined'}`)
+        d3.select('#tooltip').transition().duration(10).style('opacity', 100).text(`${countryName}: ${filtered_year[countryName] || 'undefined'}`)
       })
       .on('mouseout', function() {
         d3.select('#tooltip').style('opacity', 0)
@@ -342,7 +341,7 @@ const resizeWindow = () => {
 
 <svelte:window on:resize={resizeWindow} bind:innerWidth bind:innerHeight/>
 
-<main class="">
+<main class="" style="overflow: hidden">
   <div class="top-half">
     <div>
       <h1>Governance Quality Across the World</h1>
@@ -352,7 +351,6 @@ const resizeWindow = () => {
       <div class="row-elem">
         <label class="query-label" for="governance"><p class="vert-center">Governance Indicator:</p></label>
         <span class="query-label"><p class="vert-center">Year:</p></span>
-        <span class="query-label"><p class="vert-center">Legend:</p></span>
       </div>
       <div class="overlay row-elem">
         <select id="governance-select" name="governance">
@@ -378,14 +376,18 @@ const resizeWindow = () => {
           <label id="year-label">{slider_label}</label>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.2.0/d3.min.js"></script>
-        <svg id="legend"></svg>
       </div>
     </div>
   </div>
   <div class="choropleth" width="{innerWidth}">
-    <svg id="my_dataviz" width="600" height="200"></svg>
+    <svg id="my_dataviz" width="600" height="240"></svg>
   </div>
   <span class="data-cred">Data Source: <a href="https://www.worldbank.org/en/publication/worldwide-governance-indicators/interactive-data-access">The World Bank</a></span>
+  <div class="legend-container">
+    <p class="legend-label">Legend</p>
+    <svg id="legend"></svg>
+    <div class="data-cred-compact">Data Source: <a href="https://www.worldbank.org/en/publication/worldwide-governance-indicators/interactive-data-access">The World Bank</a></div>
+  </div>
   
   <!-- <div class="theme-switch-wrapper">
     <em>Dark mode?</em>
@@ -430,6 +432,10 @@ const resizeWindow = () => {
     --divider: #1c1c1c;
   }
 
+
+  body{
+    overflow: hidden !important;
+  }
   main {
     display: flex;
     flex-direction: column;
@@ -478,6 +484,7 @@ const resizeWindow = () => {
     justify-content: space-between;
     align-items: center;
     margin-top: 0px;
+    margin-bottom: 9px;
   }
 
   .row-elem{
@@ -525,6 +532,7 @@ const resizeWindow = () => {
 
   .choropleth {
     border-top: 1px solid var(--prompt-border);
+    overflow: hidden;
   }
   
   #my_dataviz{
@@ -542,10 +550,47 @@ const resizeWindow = () => {
     background-color: var(--background-color);
     border: 1px var(--year-background-color) solid;
     color: var(--title);
+    font-weight: bold;
+  }
+
+  .data-cred-compact{
+    color: var(--title);
+    border-top: 1px var(--divider) solid;
+    padding-top: 15px;
+    margin: 15px 0px 5px 0px;
+    width: 100%;
+    font-weight: bold;
+  }
+
+
+  .legend-container{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 5px 50px 5px 10px;
+    font-size: 12px;
+    box-shadow: 0px 0px 15px 10px var(--drop-shadow);
+    border-top-right-radius: 5px;
+    background-color: var(--background-color);
+    border: 1px var(--year-background-color) solid;
+    color: var(--title);
+  }
+
+  #legend{
+    background-color: var(--background-color);
+    border: none;
   }
 
   a {
     color: var(--primary);
+    font-weight: normal
+  }
+
+  .legend-label{
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--title);
+    margin-top: 10px;
   }
 
   @media (min-width: 200px) {
@@ -568,6 +613,12 @@ const resizeWindow = () => {
     .query-label{
       font-size: 15px;
     }
+    .data-cred{
+      display: none;
+    }
+    .data-cred-compact{
+      display: block;
+    }
   }
 
   @media (min-width: 800px) {
@@ -580,6 +631,12 @@ const resizeWindow = () => {
     .overlay > * { 
       font-size: 0.7em;
       padding: 0px 10px;
+    }
+    .data-cred{
+      display: block;
+    }
+    .data-cred-compact{
+      display: none;
     }
   }
 
