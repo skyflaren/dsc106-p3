@@ -217,7 +217,7 @@
 	const load_map = async() => {
     const svg = d3.select("#my_dataviz")
       .attr("width", innerWidth)
-      .attr("height", innerHeight-221)
+      .attr("height", innerHeight-201)
       .call(d3.zoom().on("zoom", (event) => {   
         g.attr("transform", event.transform); 
       }))
@@ -333,7 +333,7 @@ const resizeWindow = () => {
 
   d3.select("#my_dataviz")
     .attr("width", innerWidth)
-    .attr("height", innerHeight)
+    .attr("height", innerHeight-201)
 }
 
 
@@ -567,7 +567,7 @@ const resizeWindow = () => {
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: 5px 50px 5px 10px;
+    padding: 15px 20px 10px 10px;
     font-size: 12px;
     box-shadow: 0px 0px 15px 10px var(--drop-shadow);
     border-top-right-radius: 5px;
@@ -604,6 +604,12 @@ const resizeWindow = () => {
       padding: 0px 5px;
       font-size: 10px;
     }
+    .data-cred{
+      display: none;
+    }
+    .data-cred-compact{
+      display: block;
+    }
   }
 
   @media (min-width: 500px) {
@@ -613,11 +619,14 @@ const resizeWindow = () => {
     .query-label{
       font-size: 15px;
     }
+  }
+
+  @media (min-width: 550px){
     .data-cred{
-      display: none;
+      display: block;
     }
     .data-cred-compact{
-      display: block;
+      display: none;
     }
   }
 
@@ -632,12 +641,7 @@ const resizeWindow = () => {
       font-size: 0.7em;
       padding: 0px 10px;
     }
-    .data-cred{
-      display: block;
-    }
-    .data-cred-compact{
-      display: none;
-    }
+    
   }
 
 </style>
