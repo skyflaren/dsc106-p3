@@ -11,7 +11,7 @@
     "COC": "Control of Corruption",
     "VAA" : "Voice and Accountability",
     "GE": "Government of Effectiveness",
-    "PI": "Political Instability",
+    "PI": "Political Stability",
     "RQ": "Regulatory Quality",
     "ROL": "Rule of Law"
   }
@@ -358,7 +358,7 @@ const resizeWindow = () => {
           <option value="COC" selected="selected">Control of Corruption</option>
           <option value="VAA">Voice And Accountability</option>
           <option value="GE">Government Effectiveness</option>
-          <option value="PI">Political Instability</option>
+          <option value="PI">Political Stability</option>
           <option value="RQ">Regulatory Quality</option>
           <option value="ROL">Rule of Law</option>
         </select>
