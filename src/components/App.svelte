@@ -241,7 +241,7 @@ function ramp(color, n = 256) {
         .attr("d", path)
         .style("stroke", border_col) 
         .style("stroke-width", "0.25px") 
-        .style("fill", "#aab5bf");
+        .style("fill", "#6b6b6b");
       load_choropleth(world_data);
     });
 	}
@@ -280,7 +280,7 @@ function ramp(color, n = 256) {
       if (!isNaN(countryData)) {
         return colorScale(countryData);
       } else {
-        return "#aab5bf";
+        return "#6b6b6b";
       }
     })
       .attr("class", d => {
@@ -402,6 +402,8 @@ const resizeWindow = () => {
     margin: 0;
     padding: 0;
 
+    font-family: "Roboto Mono", monospace;
+
     /* light mode */
     --background-color: #fff;
     --primary: #486b99;
@@ -427,7 +429,6 @@ const resizeWindow = () => {
   }
 
   main {
-    font-family: "Roboto Mono", monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
