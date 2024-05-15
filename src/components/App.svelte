@@ -45,6 +45,7 @@
       title: governance_key[document.getElementById("governance-select").value]
     })
 
+  // Code adapted from observablehq.com, since d3-legend-swatch has outdated documentation
     function legend({
   color,
   title,
